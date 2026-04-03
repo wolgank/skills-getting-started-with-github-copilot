@@ -1,0 +1,2 @@
+.coverage -text binary
+.coverage.* -text binary

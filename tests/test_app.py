@@ -3,19 +3,12 @@ Tests for Mergington High School Activities API
 
 This module contains comprehensive tests for the FastAPI application,
 using the AAA (Arrange-Act-Assert) pattern for clarity and maintainability.
-<<<<<<< HEAD
 Tests cover all endpoints: GET /, GET /activities, POST /signup, and DELETE /unregister.
-=======
->>>>>>> main
 """
 
 import pytest
 from fastapi.testclient import TestClient
-<<<<<<< HEAD
 from src.app import app, activities
-=======
-from src.app import app
->>>>>>> main
 
 
 @pytest.fixture
@@ -30,15 +23,8 @@ def client():
 def reset_activities():
     """
     Fixture: Resets activities to initial state before each test.
-<<<<<<< HEAD
     Ensures tests don't interfere with each other by preserving participant lists.
     """
-=======
-    Ensures tests don't interfere with each other.
-    """
-    from src.app import activities
-    
->>>>>>> main
     # Store original state
     original_state = {
         name: {
@@ -85,26 +71,17 @@ class TestActivitiesEndpoint:
     
     def test_get_activities_returns_all_activities(self, client):
         """
-<<<<<<< HEAD
         Test that GET /activities returns all activities with correct structure
-=======
-        Test that GET /activities returns all 3 activities with correct structure
->>>>>>> main
         
         Arrange: Create a test client
         Act: Send a GET request to /activities
         Assert: Verify status 200, response contains all activities with required fields
         """
         # Arrange
-<<<<<<< HEAD
         expected_activities = [
             "Chess Club", "Programming Class", "Gym Class", "Basketball Team",
             "Tennis Club", "Art Studio", "Theater Club", "Debate Team", "Science Club"
         ]
-=======
-        # client is provided by fixture
-        expected_activities = ["Chess Club", "Programming Class", "Gym Class"]
->>>>>>> main
         
         # Act
         response = client.get("/activities")
@@ -113,28 +90,19 @@ class TestActivitiesEndpoint:
         # Assert
         assert response.status_code == 200
         assert isinstance(data, dict)
-<<<<<<< HEAD
         assert len(data) == 9
-=======
-        assert len(data) == 3
->>>>>>> main
         
         # Verify all activities are present
         for activity_name in expected_activities:
             assert activity_name in data
         
-<<<<<<< HEAD
         # Verify activity structure for each activity
-=======
-        # Verify activity structure
->>>>>>> main
         for activity_name, activity_data in data.items():
             assert "description" in activity_data
             assert "schedule" in activity_data
             assert "max_participants" in activity_data
             assert "participants" in activity_data
             assert isinstance(activity_data["participants"], list)
-<<<<<<< HEAD
             assert isinstance(activity_data["max_participants"], int)
             assert isinstance(activity_data["description"], str)
             assert isinstance(activity_data["schedule"], str)
@@ -162,8 +130,6 @@ class TestActivitiesEndpoint:
         
         assert len(data["Theater Club"]["participants"]) == 3
         assert "lucas@mergington.edu" in data["Theater Club"]["participants"]
-=======
->>>>>>> main
 
 
 class TestSignupEndpoint:
@@ -180,10 +146,7 @@ class TestSignupEndpoint:
         # Arrange
         activity_name = "Chess Club"
         email = "test.student@mergington.edu"
-<<<<<<< HEAD
         initial_count = len(activities[activity_name]["participants"])
-=======
->>>>>>> main
         
         # Act
         response = client.post(
@@ -199,7 +162,6 @@ class TestSignupEndpoint:
         assert activity_name in data["message"]
         
         # Verify participant was actually added
-<<<<<<< HEAD
         assert len(activities[activity_name]["participants"]) == initial_count + 1
         assert email in activities[activity_name]["participants"]
     
@@ -223,11 +185,6 @@ class TestSignupEndpoint:
             )
             assert response.status_code == 200
             assert email in activities[activity_name]["participants"]
-=======
-        activities_response = client.get("/activities")
-        activities_data = activities_response.json()
-        assert email in activities_data[activity_name]["participants"]
->>>>>>> main
     
     def test_signup_invalid_activity(self, client):
         """
@@ -253,7 +210,6 @@ class TestSignupEndpoint:
         assert "detail" in data
         assert "not found" in data["detail"].lower()
     
-<<<<<<< HEAD
     def test_signup_duplicate_returns_error(self, client, reset_activities):
         """
         Test that duplicate signup attempts are rejected
@@ -261,15 +217,6 @@ class TestSignupEndpoint:
         Arrange: Sign up a student for an activity
         Act: Attempt to sign up the same student again
         Assert: Verify second signup fails with 400 error
-=======
-    def test_signup_duplicate_participant(self, client, reset_activities):
-        """
-        Test that signing up the same email twice adds duplicate participant
-        
-        Arrange: Sign up a student once, prepare the same email for second signup
-        Act: Send POST request with same email to same activity again
-        Assert: Verify second signup succeeds and participant appears twice
->>>>>>> main
         """
         # Arrange
         activity_name = "Programming Class"
@@ -281,21 +228,15 @@ class TestSignupEndpoint:
             params={"email": email}
         )
         assert response1.status_code == 200
-<<<<<<< HEAD
         initial_count = len(activities[activity_name]["participants"])
         
         # Act: Try to sign up again
-=======
-        
-        # Act: Sign up again with same email
->>>>>>> main
         response2 = client.post(
             f"/activities/{activity_name}/signup",
             params={"email": email}
         )
         data = response2.json()
         
-<<<<<<< HEAD
         # Assert
         assert response2.status_code == 400
         assert "detail" in data
@@ -458,13 +399,3 @@ class TestIntegrationScenarios:
         assert response3.status_code == 200
         assert email in activities["Science Club"]["participants"]
         assert email not in activities["Debate Team"]["participants"]
-=======
-        # Assert: Second signup succeeds (API doesn't prevent duplicates currently)
-        assert response2.status_code == 200
-        
-        # Verify duplicate entry exists
-        activities_response = client.get("/activities")
-        activities_data = activities_response.json()
-        participant_count = activities_data[activity_name]["participants"].count(email)
-        assert participant_count == 2
->>>>>>> main
