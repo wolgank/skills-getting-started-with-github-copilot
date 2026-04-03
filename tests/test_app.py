@@ -3,7 +3,9 @@ Tests for Mergington High School Activities API
 
 This module contains comprehensive tests for the FastAPI application,
 using the AAA (Arrange-Act-Assert) pattern for clarity and maintainability.
-Tests cover all endpoints: GET /, GET /activities, POST /signup, and DELETE /unregister.
+Tests cover all endpoints: GET /, GET /activities,
+POST /activities/{activity_name}/signup, and
+DELETE /activities/{activity_name}/participants.
 """
 
 import pytest
